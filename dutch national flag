@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void dutchFlag(int arr[],int n){
+    int low=0,mid=0,high=n-1;
+    while(mid<=high){
+        if(arr[mid]==0){int t=arr[low];arr[low++]=arr[mid];arr[mid++]=t;}
+        else if(arr[mid]==1) mid++;
+        else {int t=arr[mid];arr[mid]=arr[high];arr[high--]=t;}
+    }
+}
+
+int main(){
+    int N=10000;
+    int arr[N]; srand(time(0));
+    for(int i=0;i<N;i++) arr[i]=rand()%3;
+    clock_t start=clock();
+    dutchFlag(arr,N);
+    clock_t end=clock();
+    printf("Dutch Flag: %.3f sec\n",(double)(end-start)/CLOCKS_PER_SEC);
+}
