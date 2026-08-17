@@ -1,0 +1,52 @@
+import time
+import matplotlib.pyplot as plt
+import random
+
+def is_possible(pages, students, max_pages):
+    count, total = 1, 0
+    for p in pages:
+        if total + p > max_pages:
+            count += 1
+            total = p
+            if count > students:
+                return False
+        else:
+            total += p
+    return True
+
+def minimize_max_pages(pages, students):
+    low, high = max(pages), sum(pages)
+    result = high
+    while low <= high:
+        mid = (low + high) // 2
+        if is_possible(pages, students, mid):
+            result = mid
+            high = mid - 1
+        else:
+            low = mid + 1
+    return result
+
+# Experiment
+sizes = [10000, 20000, 30000, 40000, 50000]
+measured_times, expected_times = [], []
+
+for n in sizes:
+    pages = [random.randint(1, 100) for _ in range(n)]
+    students = 50
+    start = time.time()
+    minimize_max_pages(pages, students)
+    measured_times.append(time.time() - start)
+    expected_times.append(n * (len(bin(n))-2))  # ~ O(n log n)
+
+# Normalize expected
+scale = measured_times[-1] / expected_times[-1]
+expected_times = [t * scale for t in expected_times]
+
+# Plot
+plt.plot(sizes, measured_times, label="Measured Time")
+plt.plot(sizes, expected_times, label="Expected O(n log n)")
+plt.xlabel("Array Size")
+plt.ylabel("Execution Time (s)")
+plt.title("Binary Search Book Allocation: Measured vs Expected")
+plt.legend()
+plt.show()
