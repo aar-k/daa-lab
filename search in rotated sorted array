@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define N 10000
+
+int search(int arr[],int n,int key){
+    int l=0,h=n-1;
+    while(l<=h){
+        int m=(l+h)/2;
+        if(arr[m]==key) return m;
+        if(arr[l]<=arr[m]){
+            if(key>=arr[l] && key<arr[m]) h=m-1; else l=m+1;
+        } else {
+            if(key>arr[m] && key<=arr[h]) l=m+1; else h=m-1;
+        }
+    }
+    return -1;
+}
+
+int main(){
+    int arr[N]; for(int i=0;i<N;i++) arr[i]=i;
+    int pivot=rand()%N, rot[N];
+    for(int i=0;i<N;i++) rot[i]=arr[(i+pivot)%N];
+    clock_t start=clock();
+    int idx=search(rot,N,5000);
+    clock_t end=clock();
+    printf("Index: %d, Search Time: %.3f sec\n",idx,(double)(end-start)/CLOCKS_PER_SEC);
+}
