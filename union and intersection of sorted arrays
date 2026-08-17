@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define N 10000
+
+int cmp(const void* a,const void* b){return (*(int*)a-*(int*)b);}
+
+void unionIntersection(int a[],int n1,int b[],int n2){
+    int i=0,j=0;
+    printf("Union: ");
+    while(i<n1 && j<n2){
+        if(a[i]<b[j]) printf("%d ",a[i++]);
+        else if(b[j]<a[i]) printf("%d ",b[j++]);
+        else {printf("%d ",a[i]); i++; j++;}
+    }
+    while(i<n1) printf("%d ",a[i++]);
+    while(j<n2) printf("%d ",b[j++]);
+    printf("\nIntersection: ");
+    i=0;j=0;
+    while(i<n1 && j<n2){
+        if(a[i]<b[j]) i++;
+        else if(b[j]<a[i]) j++;
+        else {printf("%d ",a[i]); i++; j++;}
+    }
+    printf("\n");
+}
+
+int main(){
+    int a[N],b[N]; srand(time(0));
+    for(int i=0;i<N;i++){a[i]=rand()%20000; b[i]=rand()%20000;}
+    qsort(a,N,sizeof(int),cmp); qsort(b,N,sizeof(int),cmp);
+    clock_t start=clock();
+    unionIntersection(a,N,b,N);
+    clock_t end=clock();
+    printf("Union/Intersection Time: %.3f sec\n",(double)(end-start)/CLOCKS_PER_SEC);
+}
