@@ -1,0 +1,46 @@
+import random
+import time
+import matplotlib.pyplot as plt
+
+# Randomized Quick Sort
+def partition(arr, low, high):
+    pivot_index = random.randint(low, high)
+    arr[pivot_index], arr[high] = arr[high], arr[pivot_index]
+    pivot = arr[high]
+    i = low - 1
+    for j in range(low, high):
+        if arr[j] <= pivot:
+            i += 1
+            arr[i], arr[j] = arr[j], arr[i]
+    arr[i+1], arr[high] = arr[high], arr[i+1]
+    return i+1
+
+def randomized_quick_sort(arr, low, high):
+    if low < high:
+        pi = partition(arr, low, high)
+        randomized_quick_sort(arr, low, pi-1)
+        randomized_quick_sort(arr, pi+1, high)
+
+# Experiment
+sizes = [10000, 20000, 30000, 40000, 50000]
+measured_times, expected_times = [], []
+
+for n in sizes:
+    arr = [random.randint(0, n) for _ in range(n)]
+    start = time.time()
+    randomized_quick_sort(arr, 0, n-1)
+    measured_times.append(time.time() - start)
+    expected_times.append(n * (len(bin(n))-2))  # ~ O(n log n)
+
+# Normalize expected for comparison
+scale = measured_times[-1] / expected_times[-1]
+expected_times = [t * scale for t in expected_times]
+
+# Plot
+plt.plot(sizes, measured_times, label="Measured Time")
+plt.plot(sizes, expected_times, label="Expected O(n log n)")
+plt.xlabel("Array Size")
+plt.ylabel("Execution Time (s)")
+plt.title("Randomized Quick Sort: Measured vs Expected")
+plt.legend()
+plt.show()
